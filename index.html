@@ -2142,6 +2142,9 @@ function previewTestReceipt(){showReceiptPreview(printerTestOrder());}
             const width=Number(getPrintTemplates().dispatch?.width||42);
             let clean=cleanPrinterText(printerOrderText(order));
             clean=clean.replace(/^-{5,}$/gm,()=>'-'.repeat(width));
+            clean=clean.replace(/^\s*CUPOM DE PEDIDO #(\S+)\s*$/m,'PEDIDO #$1');
+            clean=clean.replace(/^\s*BURGUILA\s*$/m,'BURGUILA');
+            clean=clean.split(/\r?\n/).map(line=>{const t=line.trim();return (/^(PEDIDO #\S+|BURGUILA)$/.test(t)&&t.length<width)?' '.repeat(Math.floor((width-t.length)/2))+t:line;}).join('\n');
             const wrapped=clean.split(/\r?\n/).flatMap(line=>{
                 if(!line)return [''];
                 const rows=[];let rest=line;
