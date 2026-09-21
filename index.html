@@ -2134,6 +2134,7 @@ function previewTestReceipt(){showReceiptPreview(printerTestOrder());}
             text=text.replace(/^\s*\(R\$ [^)]+(?:total|un\.)\)\s*$/gim,'');
             text=text.replace(/🚚 \*TAXA DE ENTREGA:\* R\$ ([^—\n]+) — ([^\n]+)/g,'🚚 *TAXA DE ENTREGA:* R$ $1\n📍 *REGIÃO:* $2');
             text=text.replace(/REFRIGERANTE EM LATA:/g,'REFRIGERANTE:').replace(/REFRIGERANTE 1 LITRO:/g,'REFRIGERANTE:').replace(/SUCO 500 ML:/g,'SUCO:');
+            text=text.replace(/\b\d+[°º]\s+/g,'');
             text=text.replace(/⏱️ \*Tempo de espera:[^\n]*\n*/g,'');
             return text;
         }
