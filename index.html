@@ -2129,7 +2129,24 @@ function previewTestReceipt(){showReceiptPreview(printerTestOrder());}
             message+=`⭐ *TOTAL GERAL:* R$ ${total.toFixed(2).replace('.',',')}\n-------------------------------------------\n⏱️ *Tempo de espera: ${managedSettings.waitTime||40} minutos*\n\n🕒 _Obrigado pela preferência!_`;
             return message;
         }
-        function receiptText(order){const width=Number(getPrintTemplates().dispatch?.width||42),clean=cleanPrinterText(orderWhatsAppText(order)),wrapped=clean.split(/\r?\n/).flatMap(line=>{if(!line)return [''];const rows=[];for(let i=0;i<line.length;i+=width)rows.push(line.slice(i,i+width));return rows;}).join('\n');return '\x1b@'+wrapped+'\n\n\n\x1d\x56\x00';}
+        function printerOrderText(order){
+            let text=orderWhatsAppText(order);
+            text=text.replace(/^\s*\(R\$ [^)]+(?:total|un\.)\)\s*$/gim,'');
+            text=text.replace(/🚚 \*TAXA DE ENTREGA:\* R\$ ([^—\n]+) — ([^\n]+)/g,'🚚 *TAXA DE ENTREGA:* R$ $1\n📍 *REGIÃO:* $2');
+            text=text.replace(/REFRIGERANTE EM LATA:/g,'REFRIGERANTE:').replace(/REFRIGERANTE 1 LITRO:/g,'REFRIGERANTE:').replace(/SUCO 500 ML:/g,'SUCO:');
+            text=text.replace(/⏱️ \*Tempo de espera:[^\n]*\n*/g,'');
+            return text;
+        }
+        function receiptText(order){
+            const width=Number(getPrintTemplates().dispatch?.width||42),clean=cleanPrinterText(printerOrderText(order));
+            const wrapped=clean.split(/\r?\n/).flatMap(line=>{
+                if(!line)return [''];
+                const rows=[];let rest=line;
+                while(rest.length>width){let cut=rest.lastIndexOf(' ',width);if(cut<10)cut=width;rows.push(rest.slice(0,cut));rest=rest.slice(cut).trimStart();}
+                rows.push(rest);return rows;
+            }).join('\n');
+            return '\x1b@'+wrapped+'\n\n\n\x1d\x56\x00';
+        }
         function textBytes(text) { return new TextEncoder().encode(text); }
         function joinBytes(chunks) { const total = chunks.reduce((n, a) => n + a.length, 0), result = new Uint8Array(total); let at = 0; chunks.forEach(a => { result.set(a, at); at += a.length; }); return result; }
 
