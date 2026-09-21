@@ -2662,7 +2662,7 @@ function previewTestReceipt(){showReceiptPreview(printerTestOrder());}
                 }
             }
 
-            const fingerprint=JSON.stringify({phone:publicPhone(phoneClient),items:cart.map(i=>({id:i.id||i.name,qty:i.qty,price:i.price})),fulfillment:selectedFulfillment,zone:selectedDeliveryZone,payment:selectedPaymentMethod,total:getCartSubtotal()});const lastFingerprint=JSON.parse(localStorage.getItem('burguilaLastOrderFingerprint')||'null');if(lastFingerprint&&lastFingerprint.value===fingerprint&&Date.now()-Number(lastFingerprint.at||0)<90000){alert('Este pedido já está sendo processado. Aguarde a confirmação antes de enviar novamente.');return;}localStorage.setItem('burguilaLastOrderFingerprint',JSON.stringify({value:fingerprint,at:Date.now()}));let orderNum;try{orderNum=await getNextDailyOrderNumber();}catch(e){const day=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Fortaleza',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()),key='burguilaDailyOrderFallback_'+day;orderNum=Number(localStorage.getItem(key)||0)+1;localStorage.setItem(key,String(orderNum));console.warn('Contador diário Firebase indisponível; usando sequência local temporária.',e);}
+            let orderNum;try{orderNum=await getNextDailyOrderNumber();}catch(e){const day=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Fortaleza',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()),key='burguilaDailyOrderFallback_'+day;orderNum=Number(localStorage.getItem(key)||0)+1;localStorage.setItem(key,String(orderNum));console.warn('Contador diário Firebase indisponível; usando sequência local temporária.',e);}
             let subtotal = 0;
             let totalBurgersInCart = 0;
 
