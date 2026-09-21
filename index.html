@@ -2139,7 +2139,9 @@ function previewTestReceipt(){showReceiptPreview(printerTestOrder());}
             return text;
         }
         function receiptText(order){
-            const width=Number(getPrintTemplates().dispatch?.width||42),clean=cleanPrinterText(printerOrderText(order));
+            const width=Number(getPrintTemplates().dispatch?.width||42);
+            let clean=cleanPrinterText(printerOrderText(order));
+            clean=clean.replace(/^-{5,}$/gm,()=>'-'.repeat(width));
             const wrapped=clean.split(/\r?\n/).flatMap(line=>{
                 if(!line)return [''];
                 const rows=[];let rest=line;
